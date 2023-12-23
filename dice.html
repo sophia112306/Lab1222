@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roll Dice and Display Statistics</title>
+    <style>
+        /* Add any styling here if needed */
+        .dice {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .die {
+            margin: 5px;
+        }
+
+        .die img {
+            max-width: 50px;
+            max-height: 50px;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 50%;
+        }
+
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+  <script>
+    // Constants
+    const NUM_DICE = 12;
+    const NUM_FACES = 6;
+
+    // Array to store the frequency of each face
+    let frequencyTable = new Array(NUM_FACES).fill(0);
+
+    // Function to simulate rolling 12 dice
+    function rollDice() {
+        // Reset frequency table
+        frequencyTable.fill(0);
+
+        // Container for dice images
+        let diceContainer = document.getElementById("diceContainer");
+        diceContainer.innerHTML = ""; // Clear previous dice
+
+        // Roll each die and update frequency table
+        for (let i = 1; i <= NUM_DICE; i++) {
+            let face = Math.floor(Math.random() * NUM_FACES) + 1;
+            frequencyTable[face - 1]++;
+            updateDieResult(i, face); // Update the result for each die
+
+            // Create a div for each die and append it to the container
+            let dieDiv = document.createElement("div");
+            dieDiv.classList.add("die");
+            dieDiv.innerHTML = `<img src="dice/die${face}.png" alt="Die ${i}: ${face}">`;
+            diceContainer.appendChild(dieDiv);
+        }
+
+        // Update the frequency table on the page
+        updateFrequencyTable();
+
+        // Show the table container after rolling dice
+        document.getElementById("tableContainer").style.display = "block";
+    }
+
+    // Function to update the frequency table on the page
+    function updateFrequencyTable() {
+        let tableBody = document.getElementById("frequencyTableBody");
+        tableBody.innerHTML = "";
+
+        for (let i = 0; i < NUM_FACES; i++) {
+            let row = tableBody.insertRow();
+            let cell1 = row.insertCell(0);
+            let cell2 = row.insertCell(1);
+
+            cell1.textContent = `${i + 1}`;
+            cell2.textContent = calculatePercentage(frequencyTable[i], NUM_DICE);
+        }
+    }
+
+   function updateDieResult(dieNumber, face) {
+        // Optional: You can update individual die images here if needed
+    }
+
+    // Function to calculate percentage
+    function calculatePercentage(count, total) {
+        return ((count / total) * 100).toFixed(2);
+    }
+
+    // Event listener to start the program when the page loads
+    window.addEventListener("load", start, false);
+
+    // Function to set up the event listener for the roll button
+    function start() {
+        let rollButton = document.getElementById("rollButton");
+        rollButton.addEventListener("click", rollDice, false);
+    }
+
+    // Initial setup to display six dice images
+    let diceContainer = document.getElementById("diceContainer");
+    for (let i = 1; i <= 6; i++) {
+        let face = Math.floor(Math.random() * NUM_FACES) + 1;
+        updateDieResult(i, face);
+
+        let dieDiv = document.createElement("div");
+        dieDiv.classList.add("die");
+        dieDiv.innerHTML = `<img src="dice/die${face}.png" alt="Die ${i}: ${face}">`;
+        diceContainer.appendChild(dieDiv);
+    }
+  </script>
+
+  <!-- Dice Images -->
+  <!-- Make sure you have images/die1.png, images/die2.png, etc. -->
+  <div id="diceContainer" class="dice"></div>
+
+  <!-- Roll Button -->
+  <button id="rollButton">Roll Dice</button>
+
+  <!-- Table Container (Initially Hidden) -->
+  <div id="tableContainer" style="display: none;">
+    <!-- Probability Table -->
+    <table>
+      <thead>
+        <tr>
+          <th>Face</th>
+          <th>Percent</th>
+        </tr>
+      </thead>
+      <tbody id="frequencyTableBody">
+        <!-- Frequency table rows will be added dynamically -->
+      </tbody>
+    </table>
+  </div>
+
+</body>
+</html>
